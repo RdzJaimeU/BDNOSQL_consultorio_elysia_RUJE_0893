@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pacientes</title>
+    <style>
+        body {
+            background-color: #F5F7F2;
+            color: #3A5A40;
+            font-family: "Times New Roman",Times, sans-serif;   
+            margin: 0;
+        }
+
+        header {
+            background-color: #2D5A27;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        nav {
+            background-color: white;
+            text-align: center;
+            padding: 10px;
+            border-bottom: 2px solid #A3B18A;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav li {
+            display: inline-block;
+            margin: 0 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #A3B18A;
+            font-weight: bold;
+        }
+
+        .contenedor {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        section {
+            background-color: #FFFFFF;
+            padding: 20px;
+            border-radius: 10px;
+            flex: 2;
+        }
+
+        footer {
+            background-color: #1E3D1A;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+        }
+       
+.tabla {
+    width: 100%;
+    border-collapse: collapse; 
+    margin: 20px 0;
+    font-size: 16px;
+    background-color: #FFFFFF; 
+    border-radius: 10px 10px 0 0;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(58, 90, 64, 0.1);
+}
+
+
+.tabla-datos thead tr {
+    background-color: #A3B18A; 
+    color: #FFFFFF; 
+    text-align: left;
+    font-weight: bold;
+}
+
+
+.tabla-datos th, 
+.tabla-datos td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #DADECF; 
+}
+
+.tabla-datos tbody tr:nth-of-type(even) {
+    background-color: #F5F7F2; 
+}
+
+.tabla-datos tbody tr:hover {
+    background-color: #E9EDDE; 
+    transition: 0.3s;
+}
+
+.tabla-datos td {
+    color: #3A5A40; 
+}
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="lloyd.png" alt="Logo" width="80">
+        <h1>Consultorio Médico Elysia</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">INICIO</a></li>
+            <li><a href="doctores.html">DOCTORES</a></li>
+            <li><a href="citas.html">CITAS</a></li>
+            <li><a href="facturas.html">FACTURAS</a></li>
+        </ul>
+    </nav>
+
+    <div class="contenedor">
+       <section>
+       <h2><strong>Coleccion de Pacientes</strong></h2>
+      <table class="tabla-datos">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Nombre del Paciente</th>
+                <th>Nacimiento / Edad</th>
+                <th>Estado Civil / Ocupación</th>
+                <th>Dirección</th>
+                <th>Datos Médicos</th>
+                <th>Emergencia</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Juan Pérez Garcia</td>
+                <td>19/4/85 (41 años)</td>
+                <td>Casado / Arquitecto</td>
+                <td>Av. Reforma 104, Col. Centro</td>
+                <td>O+ (Alergia: Penicilina)</td>
+                <td>Laura Pérez: 55-1234-5678</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>María González López</td>
+                <td>30/1/94 (35 años)</td>
+                <td>Soltera / Contadora</td>
+                <td>Calle Naranjo 45, Col. Santa María</td>
+                <td>A+ (Asma leve)</td>
+                <td>José González: 55-8765-4321</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Pedro Rodríguez</td>
+                <td>15/2/98 (28 años)</td>
+                <td>Soltero / Estudiante</td>
+                <td>Calzada Tlalpan 2020, Col. Churubusco</td>
+                <td>B+ (Hipertensión)</td>
+                <td>Ana Ruiz: 55-1122-3344</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Luisa Hernández</td>
+                <td>10/3/66 (60 años)</td>
+                <td>Viuda / Jubilada</td>
+                <td>Calle 7 #30, Col. San Pedro</td>
+                <td>O- (Diabetes Tipo 2)</td>
+                <td>Roberto Hdez: 55-9988-7766</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Carlos Ruíz</td>
+                <td>5/12/75 (50 años)</td>
+                <td>Casado / Chofer</td>
+                <td>Av. Taxqueña 150, Col. Paseos</td>
+                <td>A- (Lumbalgia)</td>
+                <td>Rosa Lima: 55-6655-4433</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Laura Díaz</td>
+                <td>14/2/21 (5 años)</td>
+                <td>Tutor: Sofía Díaz</td>
+                <td>Calle Amores 22, Col. del Valle</td>
+                <td>O+ (Alergia: Fresas)</td>
+                <td>Sofía Díaz: 55-5544-3322</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Javier Morales</td>
+                <td>30/8/80 (45 años)</td>
+                <td>Divorciado / Abogado</td>
+                <td>Paseo Reforma 600, Torre A</td>
+                <td>AB+ (Ansiedad)</td>
+                <td>Jorge M.: 55-7766-5544</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>Ana Torres</td>
+                <td>22/11/93 (32 años)</td>
+                <td>Unión Libre / Dis. Gráfica</td>
+                <td>Calle Amsterdam 80, Col. Condesa</td>
+                <td>O+ (Miopía)</td>
+                <td>Luis G.: 55-2233-4411</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>Miguel Ángel R</td>
+                <td>4/6/03 (22 años)</td>
+                <td>Soltero / Estudiante univ.</td>
+                <td>Eje 10 Sur #40, Col. S. Domingo</td>
+                <td>A+ (Dermatitis)</td>
+                <td>Carmen R.: 55-8899-0011</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>Elena Castillo</td>
+                <td>15/9/55 (70 años)</td>
+                <td>Viuda / Ama de casa</td>
+                <td>Calle Hidalgo 5, Col. Coyoacán</td>
+                <td>B- (Gastritis/Artritis)</td>
+                <td>Dr. Castillo: 55-0099-8877</td>
+            </tr>
+        </tbody>
+    </table>
+       </section>
+    </div>
+
+    <footer>
+        <p><strong>Alumno:</strong> Jaime Emmanuel Rodríguez Ugalde</p>
+        <p>No. Control: 0893 | 4° J | Programación | CBTIS 128</p>
+        <p><strong>Docente:</strong> Leticia Meza Díaz</p>
+    </footer>
+
+</body>
+</html>
