@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Facturas</title>
+    <style>
+        body {
+            background-color: #F5F7F2;
+            color: #3A5A40;
+            font-family: "Times New Roman",Times, sans-serif;
+            margin: 0;
+        }
+
+        header {
+            background-color: #2D5A27;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        nav {
+            background-color: white;
+            text-align: center;
+            padding: 10px;
+            border-bottom: 2px solid #A3B18A;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav li {
+            display: inline-block;
+            margin: 0 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #A3B18A;
+            font-weight: bold;
+        }
+
+        .contenedor {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        section {
+            background-color: #FFFFFF;
+            padding: 20px;
+            border-radius: 10px;
+            flex: 2;
+        }
+
+        footer {
+            background-color: #1E3D1A;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+        }
+       
+.tabla {
+    width: 100%;
+    border-collapse: collapse; 
+    margin: 20px 0;
+    font-size: 16px;
+    background-color: #FFFFFF; 
+    border-radius: 10px 10px 0 0;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(58, 90, 64, 0.1);
+}
+
+
+.tabla-datos thead tr {
+    background-color: #A3B18A; 
+    color: #FFFFFF; 
+    text-align: left;
+    font-weight: bold;
+}
+
+
+.tabla-datos th, 
+.tabla-datos td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #DADECF; 
+}
+
+.tabla-datos tbody tr:nth-of-type(even) {
+    background-color: #F5F7F2; 
+}
+
+.tabla-datos tbody tr:hover {
+    background-color: #E9EDDE; 
+    transition: 0.3s;
+}
+
+.tabla-datos td {
+    color: #3A5A40; 
+}
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="lloyd.png" alt="Logo" width="80">
+        <h1>Consultorio Médico Elysia</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">INICIO</a></li>
+            <li><a href="pacientes.html">PACIENTES</a></li>
+            <li><a href="doctores.html">DOCTORES</a></li>
+            <li><a href="citas.html">CITAS</a></li>
+        </ul>
+    </nav>
+
+    <div class="contenedor">
+       <section>
+       <h2><strong>Coleccion de Facturas</strong></h2>
+    <table class="tabla-datos">
+        <thead>
+            <tr>
+                <th>Ticket No.</th>
+                <th>Paciente</th>
+                <th>Concepto del Servicio</th>
+                <th>Método de Pago / Detalles</th>
+                <th>RFC del Cliente</th>
+                <th>Total Pagado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>001</td>
+                <td>Juan Pérez</td>
+                <td>Consulta</td>
+                <td>Efectivo</td>
+                <td>PEGJ850412HDFRRA09</td>
+                <td><strong>$600.00</strong></td>
+            </tr>
+            <tr>
+                <td>002</td>
+                <td>María González</td>
+                <td>Consulta Pediatría</td>
+                <td>Tarjeta de crédito (Visa)</td>
+                <td>GOLM910120MDFRRL03</td>
+                <td><strong>$800.00</strong></td>
+            </tr>
+            <tr>
+                <td>003</td>
+                <td>Pedro Rodríguez</td>
+                <td>Consulta Cardiología</td>
+                <td>Tarjeta de débito (Visa)</td>
+                <td>ROPP980129SHDFRRP08</td>
+                <td><strong>$900.00</strong></td>
+            </tr>
+            <tr>
+                <td>004</td>
+                <td>Luisa Hernández</td>
+                <td>Chequeo General</td>
+                <td>Efectivo</td>
+                <td>HELM660310MDFRRL01</td>
+                <td><strong>$600.00</strong></td>
+            </tr>
+            <tr>
+                <td>005</td>
+                <td>Carlos Ruíz</td>
+                <td>Consulta Trauma</td>
+                <td>Transferencia SPEI (Ref: 5892)</td>
+                <td>RUIC751205HDFRRC04</td>
+                <td><strong>$700.00</strong></td>
+            </tr>
+            <tr>
+                <td>006</td>
+                <td>Laura Díaz</td>
+                <td>Vacuna varicela + consulta</td>
+                <td>Tarjeta de crédito</td>
+                <td>DILG210214MDFRRL02</td>
+                <td><strong>$1,200.00</strong></td>
+            </tr>
+            <tr>
+                <td>007</td>
+                <td>Javier Morales</td>
+                <td>Terapia</td>
+                <td>Tarjeta de débito (Visa)</td>
+                <td>MOJA800830HDFRRM07</td>
+                <td><strong>$1,000.00</strong></td>
+            </tr>
+            <tr>
+                <td>008</td>
+                <td>Ana Torres</td>
+                <td>Consulta Oftalmología</td>
+                <td>Efectivo</td>
+                <td>TOAA931122MDFRRT05</td>
+                <td><strong>$600.00</strong></td>
+            </tr>
+            <tr>
+                <td>009</td>
+                <td>Miguel Ángel R.</td>
+                <td>Consulta Dermatología</td>
+                <td>Efectivo</td>
+                <td>RAMMP30704HDFRRM09</td>
+                <td><strong>$600.00</strong></td>
+            </tr>
+            <tr>
+                <td>010</td>
+                <td>Elena Castillo</td>
+                <td>Procedimiento internista</td>
+                <td>Transferencia SPEI (Ref: 10233)</td>
+                <td>CAEL550915MDFRRC06</td>
+                <td><strong>$1,500.00</strong></td>
+            </tr>
+        </tbody>
+    </table>
+       </section>
+    </div>
+
+    <footer>
+        <p><strong>Alumno:</strong> Jaime Emmanuel Rodríguez Ugalde</p>
+        <p>No. Control: 0893 | 4° J | Programación | CBTIS 128</p>
+        <p><strong>Docente:</strong> Leticia Meza Díaz</p>
+    </footer>
+
+</body>
+</html>
