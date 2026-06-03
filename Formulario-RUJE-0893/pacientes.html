@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pacientes</title>
+    <style>
+        body {
+            background-color: #F5F7F2;
+            color: #3A5A40;
+            font-family: "Times New Roman",Times, sans-serif;   
+            margin: 0;
+        }
+
+        header {
+            background-color: #2D5A27;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        nav {
+            background-color: white;
+            text-align: center;
+            padding: 10px;
+            border-bottom: 2px solid #A3B18A;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav li {
+            display: inline-block;
+            margin: 0 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #A3B18A;
+            font-weight: bold;
+        }
+
+        .contenedor {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .formulario-seccion {
+            background-color: #FFFFFF;
+            padding: 20px;
+            border-radius: 10px;
+            flex: 1;
+            box-shadow: 0 4px 15px rgba(58, 90, 64, 0.1);
+        }
+
+        .tabla-seccion {
+            background-color: #FFFFFF;
+            padding: 20px;
+            border-radius: 10px;
+            flex: 2;
+            box-shadow: 0 4px 15px rgba(58, 90, 64, 0.1);
+            overflow-x: auto;
+        }
+
+        .formulario-grupo {
+            margin-bottom: 15px;
+        }
+
+        .formulario-grupo label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2D5A27;
+        }
+
+        .formulario-grupo input, 
+        .formulario-grupo select, 
+        .formulario-grupo textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #A3B18A;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .botones-crud {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-guardar {
+            background-color: #2D5A27;
+        }
+
+        .btn-actualizar {
+            background-color: #A3B18A;
+        }
+
+        .btn-editar {
+            background-color: #A3B18A;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+
+        .btn-eliminar {
+            background-color: #d9534f;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+       
+.tabla {
+    width: 100%;
+    border-collapse: collapse; 
+    margin: 20px 0;
+    font-size: 16px;
+    background-color: #FFFFFF; 
+    border-radius: 10px 10px 0 0;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(58, 90, 64, 0.1);
+}
+
+
+.tabla-datos thead tr {
+    background-color: #A3B18A; 
+    color: #FFFFFF; 
+    text-align: left;
+    font-weight: bold;
+}
+
+
+.tabla-datos th, 
+.tabla-datos td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #DADECF; 
+}
+
+.tabla-datos tbody tr:nth-of-type(even) {
+    background-color: #F5F7F2; 
+}
+
+.tabla-datos tbody tr:hover {
+    background-color: #E9EDDE; 
+    transition: 0.3s;
+}
+
+.tabla-datos td {
+    color: #3A5A40; 
+}
+
+.acciones {
+    display: flex;
+    gap: 5px;
+}
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="lloyd.png" alt="Logo" width="80">
+        <h1>Consultorio Médico Elysia</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">INICIO</a></li>
+            <li><a href="doctores.html">DOCTORES</a></li>
+            <li><a href="citas.html">CITAS</a></li>
+            <li><a href="facturas.html">FACTURAS</a></li>
+        </ul>
+    </nav>
+
+    <div class="contenedor">
+        <section class="formulario-seccion">
+            <h2><strong>Registrar Paciente</strong></h2>
+            <form>
+                <div class="formulario-grupo">
+                    <label>No.</label>
+                    <input type="text" placeholder="Ej. 11">
+                </div>
+                <div class="formulario-grupo">
+                    <label>Nombre del Paciente</label>
+                    <input type="text" placeholder="Nombre completo">
+                </div>
+                <div class="formulario-grupo">
+                    <label>Nacimiento / Edad</label>
+                    <input type="text" placeholder="DD/MM/AA (Edad)">
+                </div>
+                <div class="formulario-grupo">
+                    <label>Estado Civil / Ocupación</label>
+                    <input type="text" placeholder="Ej. Soltero / Estudiante">
+                </div>
+                <div class="formulario-grupo">
+                    <label>Dirección</label>
+                    <textarea rows="2" placeholder="Dirección completa"></textarea>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Datos Médicos</label>
+                    <input type="text" placeholder="Tipo de sangre, alergias, etc.">
+                </div>
+                <div class="formulario-grupo">
+                    <label>Emergencia</label>
+                    <input type="text" placeholder="Contacto y teléfono">
+                </div>
+                <div class="botones-crud">
+                    <button type="button" class="btn btn-guardar">Guardar</button>
+                </div>
+            </form>
+        </section>
+
+       <section class="tabla-seccion">
+       <h2><strong>Coleccion de Pacientes</strong></h2>
+      <table class="tabla-datos">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Nombre del Paciente</th>
+                <th>Nacimiento / Edad</th>
+                <th>Estado Civil / Ocupación</th>
+                <th>Dirección</th>
+                <th>Datos Médicos</th>
+                <th>Emergencia</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-body">
+        </tbody>
+    </table>
+       </section>
+    </div>
+
+    <footer style="background-color: #1E3D1A; color: white; text-align: center; padding: 20px; margin-top: 20px;">
+        <p><strong>Alumno:</strong> Jaime Emmanuel Rodríguez Ugalde</p>
+        <p>No. Control: 0893 | 4° J | Programación | CBTIS 128</p>
+        <p><strong>Docente:</strong> Leticia Meza Díaz</p>
+    </footer>
+
+    <script>
+        document.querySelector('.btn-guardar').addEventListener('click', function() {
+            const inputs = document.querySelectorAll('.formulario-seccion input, .formulario-seccion textarea');
+            let row = '<tr>';
+            inputs.forEach(input => {
+                row += `<td>${input.value || '-'}</td>`;
+            });
+            row += '</tr>';
+            document.getElementById('tabla-body').innerHTML += row;
+            document.querySelector('form').reset();
+        });
+    </script>
+</body>
+</html>
