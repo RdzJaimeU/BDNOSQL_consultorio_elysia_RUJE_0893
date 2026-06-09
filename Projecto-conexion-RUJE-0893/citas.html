@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Citas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <img src="lloyd.png" alt="Logo" width="80">
+        <h1>Consultorio Médico Elysia</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">INICIO</a></li>
+            <li><a href="pacientes.html">PACIENTES</a></li>
+            <li><a href="doctores.html">DOCTORES</a></li>
+            <li><a href="facturas.html">FACTURAS</a></li>
+        </ul>
+    </nav>
+
+    <div class="contenedor">
+        <section class="formulario-seccion">
+            <h2><strong>Agendar Cita</strong></h2>
+            <form id="formulario">
+                <div class="formulario-grupo">
+                    <label>ID / Fecha y Hora</label>
+                    <input type="text" name="id_fecha" placeholder="Ej. CIT-2026-001 - 01/03/2026 09:00 AM" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Paciente / Especialista</label>
+                    <input type="text" name="paciente_especialista" placeholder="Nombre del paciente / Especialista"
+                        required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Motivo de Consulta</label>
+                    <textarea rows="2" name="motivo" placeholder="Describa el motivo" required></textarea>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Triage (Signos Vitales)</label>
+                    <textarea rows="2" name="triage" placeholder="Presión, Temp, Peso..." required></textarea>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Estado / Plan Médico</label>
+                    <input type="text" name="estado_plan" placeholder="Completada / Pendiente, etc." required>
+                </div>
+                <div class="botones-crud">
+                    <button type="submit" class="btn btn-guardar">Guardar</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="tabla-seccion">
+            <h2><strong>Coleccion de Citas</strong></h2>
+            <div class="buscador-contenedor">
+                <input type="text" id="buscador" class="input-buscador" placeholder="Buscar cita..." oninput="filtrarTabla()">
+            </div>
+            <table class="tabla-datos">
+                <thead>
+                    <tr>
+                        <th>ID / Fecha y Hora</th>
+                        <th>Paciente / Especialista</th>
+                        <th>Motivo de Consulta</th>
+                        <th>Triage (Signos Vitales)</th>
+                        <th>Estado / Plan Médico</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-body">
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <footer>
+        <img src="lloyd.png" alt="Logo" width="40" style="margin-bottom: 10px;">
+        <p><strong>Alumno:</strong> Jaime Emmanuel Rodríguez Ugalde</p>
+        <p>No. Control: 0893 | 4° J | Programación | CBTIS 128</p>
+        <p><strong>Docente:</strong> Leticia Meza Díaz</p>
+    </footer>
+
+    <script>
+        const API_URL = '/api/citas';
+        let editId = null;
+
+        async function cargarDatos() {
+            try {
+                const res = await fetch(API_URL);
+                const datos = await res.json();
+                const tbody = document.getElementById('tabla-body');
+                tbody.innerHTML = '';
+                datos.forEach(d => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${d.id_fecha || ''}</td>
+                            <td>${d.paciente_especialista || ''}</td>
+                            <td>${d.motivo || ''}</td>
+                            <td>${d.triage || ''}</td>
+                            <td>${d.estado_plan || ''}</td>
+                            <td class="acciones">
+                                <button class="btn btn-editar" onclick="editar('${d._id}')">Editar</button>
+                                <button class="btn btn-eliminar" onclick="eliminar('${d._id}')">Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                filtrarTabla();
+            } catch (e) {
+                console.error("Error cargando datos", e);
+            }
+        }
+
+        document.getElementById('formulario').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                if (editId) {
+                    await fetch(API_URL + '/' + editId, {
+                        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+                    });
+                    alert('Cita actualizada correctamente');
+                } else {
+                    await fetch(API_URL, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+                    });
+                    alert('Cita guardada correctamente');
+                }
+                e.target.reset();
+                editId = null;
+                cargarDatos();
+            } catch (error) {
+                alert('Hubo un error al guardar');
+            }
+        });
+
+        async function eliminar(id) {
+            const pwd = prompt('Ingrese contraseña de Administrador para eliminar:');
+            if (pwd !== 'admin123') {
+                alert('Acceso denegado: Contraseña incorrecta.');
+                return;
+            }
+            if (confirm('¿Seguro que deseas eliminar este registro?')) {
+                await fetch(API_URL + '/' + id, { method: 'DELETE' });
+                cargarDatos();
+            }
+        }
+
+        async function editar(id) {
+            const pwd = prompt('Ingrese contraseña de Administrador para editar:');
+            if (pwd !== 'admin123') {
+                alert('Acceso denegado: Contraseña incorrecta.');
+                return;
+            }
+            const res = await fetch(API_URL);
+            const datos = await res.json();
+            const cita = datos.find(d => d._id === id);
+            if (cita) {
+                editId = id;
+                document.querySelector('[name="id_fecha"]').value = cita.id_fecha || '';
+                document.querySelector('[name="paciente_especialista"]').value = cita.paciente_especialista || '';
+                document.querySelector('[name="motivo"]').value = cita.motivo || '';
+                document.querySelector('[name="triage"]').value = cita.triage || '';
+                document.querySelector('[name="estado_plan"]').value = cita.estado_plan || '';
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function filtrarTabla() {
+            const filtro = document.getElementById('buscador').value.toLowerCase();
+            const filas = document.querySelectorAll('#tabla-body tr');
+            filas.forEach(fila => {
+                const texto = fila.textContent.toLowerCase();
+                if (texto.includes(filtro)) {
+                    fila.style.display = '';
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+        }
+
+        cargarDatos();
+    </script>
+
+</body>
+
+</html>
