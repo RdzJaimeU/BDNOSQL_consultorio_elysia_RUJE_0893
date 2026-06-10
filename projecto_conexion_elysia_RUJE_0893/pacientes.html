@@ -1,0 +1,232 @@
+<!-- Rodriguez Ugalde Jaime Emmanuel 4°J 0893 -->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pacientes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <img src="lloyd.png" alt="Logo" width="80">
+        <h1>Consultorio Médico Elysia</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">INICIO</a></li>
+            <li><a href="doctores.html">DOCTORES</a></li>
+            <li><a href="citas.html">CITAS</a></li>
+            <li><a href="facturas.html">FACTURAS</a></li>
+        </ul>
+    </nav>
+
+    <div class="contenedor">
+        <section class="formulario-seccion">
+            <h2><strong>Registrar Paciente</strong></h2>
+            <form id="formulario">
+                <div class="formulario-grupo">
+                    <label>No.</label>
+                    <input type="text" name="numero" placeholder="Ej. 11" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Nombre del Paciente</label>
+                    <input type="text" name="nombre" placeholder="Nombre completo" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Fecha de Nacimiento</label>
+                    <input type="date" name="fecha_nacimiento" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Edad</label>
+                    <input type="number" name="edad" placeholder="Ej. 25" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Estado Civil</label>
+                    <select name="estado_civil" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Soltero/a">Soltero/a</option>
+                        <option value="Casado/a">Casado/a</option>
+                        <option value="Divorciado/a">Divorciado/a</option>
+                        <option value="Viudo/a">Viudo/a</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Ocupación</label>
+                    <input type="text" name="ocupacion" placeholder="Ej. Estudiante, Ingeniero" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Dirección</label>
+                    <textarea rows="2" name="direccion" placeholder="Dirección completa" required></textarea>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Datos Médicos</label>
+                    <input type="text" name="datos_medicos" placeholder="Tipo de sangre, alergias, etc." required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Emergencia</label>
+                    <input type="text" name="emergencia" placeholder="Contacto y teléfono" required>
+                </div>
+                <div class="botones-crud">
+                    <button type="submit" class="btn btn-guardar">Guardar</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="tabla-seccion">
+            <h2><strong>Colección de Pacientes</strong></h2>
+            <div class="buscador-contenedor">
+                <input type="text" id="buscador" class="input-buscador" placeholder="Buscar paciente..." oninput="filtrarTabla()">
+            </div>
+            <table class="tabla-datos">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Nombre</th>
+                        <th>Nacimiento</th>
+                        <th>Edad</th>
+                        <th>Estado Civil</th>
+                        <th>Ocupación</th>
+                        <th>Dirección</th>
+                        <th>Datos Médicos</th>
+                        <th>Emergencia</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-body">
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <footer>
+        <img src="lloyd.png" alt="Logo" width="40" style="margin-bottom: 10px;">
+        <p><strong>Alumno:</strong> Jaime Emmanuel Rodríguez Ugalde</p>
+        <p>No. Control: 0893 | 4° J | Programación | CBTIS 128</p>
+        <p><strong>Docente:</strong> Leticia Meza Díaz | <strong>Submódulo:</strong> Bases de Datos No Relacionales</p>
+    </footer>
+
+    <script>
+        // ruta del backend donde esta el server.js
+        const API_URL = '/api/pacientes';
+        let editId = null;
+
+        // funcion que trae los datos de mongo y los dibuja en la tabla
+        async function cargarDatos() {
+            try {
+                const res = await fetch(API_URL);
+                const datos = await res.json();
+                const tbody = document.getElementById('tabla-body');
+                tbody.innerHTML = '';
+                datos.forEach(d => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${d.numero || ''}</td>
+                            <td>${d.nombre || ''}</td>
+                            <td>${d.fecha_nacimiento || ''}</td>
+                            <td>${d.edad || ''}</td>
+                            <td>${d.estado_civil || ''}</td>
+                            <td>${d.ocupacion || ''}</td>
+                            <td>${d.direccion || ''}</td>
+                            <td>${d.datos_medicos || ''}</td>
+                            <td>${d.emergencia || ''}</td>
+                            <td class="acciones">
+                                <button class="btn btn-editar" onclick="editar('${d._id}')">Editar</button>
+                                <button class="btn btn-eliminar" onclick="eliminar('${d._id}')">Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                filtrarTabla();
+            } catch (e) {
+                console.error("Error cargando datos", e);
+            }
+        }
+
+        // cuando le doy a guardar en el formulario (ya sea nuevo o editado)
+        document.getElementById('formulario').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                if (editId) {
+                    await fetch(API_URL + '/' + editId, {
+                        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+                    });
+                    alert('Paciente actualizado correctamente');
+                } else {
+                    await fetch(API_URL, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+                    });
+                    alert('Paciente guardado correctamente');
+                }
+                e.target.reset();
+                editId = null;
+                cargarDatos();
+            } catch (error) {
+                alert('Hubo un error al guardar');
+            }
+        });
+
+        // boton de eliminar, pide contraseña por seguridad
+        async function eliminar(id) {
+            const pwd = prompt('Ingrese contraseña de Administrador para eliminar:');
+            if (pwd !== 'elysae43') {
+                alert('Acceso denegado: Contraseña incorrecta.');
+                return;
+            }
+            if (confirm('¿Seguro que deseas eliminar este registro?')) {
+                await fetch(API_URL + '/' + id, { method: 'DELETE' });
+                cargarDatos();
+            }
+        }
+
+        // sube los datos del registro a las cajas de texto para poder cambiarlos
+        async function editar(id) {
+            const pwd = prompt('Ingrese contraseña de Administrador para editar:');
+            if (pwd !== 'elysae43') {
+                alert('Acceso denegado: Contraseña incorrecta.');
+                return;
+            }
+            const res = await fetch(API_URL);
+            const datos = await res.json();
+            const paciente = datos.find(d => d._id === id);
+            if (paciente) {
+                editId = id;
+                document.querySelector('[name="numero"]').value = paciente.numero || '';
+                document.querySelector('[name="nombre"]').value = paciente.nombre || '';
+                document.querySelector('[name="fecha_nacimiento"]').value = paciente.fecha_nacimiento || '';
+                document.querySelector('[name="edad"]').value = paciente.edad || '';
+                document.querySelector('[name="estado_civil"]').value = paciente.estado_civil || '';
+                document.querySelector('[name="ocupacion"]').value = paciente.ocupacion || '';
+                document.querySelector('[name="direccion"]').value = paciente.direccion || '';
+                document.querySelector('[name="datos_medicos"]').value = paciente.datos_medicos || '';
+                document.querySelector('[name="emergencia"]').value = paciente.emergencia || '';
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // el buscador que oculta las filas que no traen lo que escribo
+        function filtrarTabla() {
+            const filtro = document.getElementById('buscador').value.toLowerCase();
+            const filas = document.querySelectorAll('#tabla-body tr');
+            filas.forEach(fila => {
+                const texto = fila.textContent.toLowerCase();
+                if (texto.includes(filtro)) {
+                    fila.style.display = '';
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+        }
+
+        // mando llamar la funcion para que la tabla empiece llena
+        cargarDatos();
+    </script>
+</body>
+</html>

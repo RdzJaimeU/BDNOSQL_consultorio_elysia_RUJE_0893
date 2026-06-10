@@ -1,0 +1,239 @@
+<!-- Rodriguez Ugalde Jaime Emmanuel 4°J 0893 -->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Doctores</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <img src="lloyd.png" alt="Logo" width="80">
+        <h1>Consultorio Médico Elysia</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">INICIO</a></li>
+            <li><a href="pacientes.html">PACIENTES</a></li>
+            <li><a href="citas.html">CITAS</a></li>
+            <li><a href="facturas.html">FACTURAS</a></li>
+        </ul>
+    </nav>
+
+    <div class="contenedor">
+        <section class="formulario-seccion">
+            <h2><strong>Registrar Doctor</strong></h2>
+            <form id="formulario">
+                <div class="formulario-grupo">
+                    <label>No.</label>
+                    <input type="text" name="numero" placeholder="Ej. 11" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Nombre del Doctor</label>
+                    <input type="text" name="nombre" placeholder="Nombre completo" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Especialidad</label>
+                    <input type="text" name="especialidad" placeholder="Ej. Pediatría" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Consultorio</label>
+                    <input type="text" name="consultorio" placeholder="Ej. H02" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Horario de Atención</label>
+                    <input type="text" name="horario" placeholder="Ej. Lun-Sab / 10:00 AM - 06:00 PM" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Universidad / Título</label>
+                    <input type="text" name="universidad" placeholder="Universidad de egreso" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Cédula Profesional</label>
+                    <input type="text" name="cedula" placeholder="No. de Cédula" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>RFC</label>
+                    <input type="text" name="rfc" placeholder="RFC" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>CURP</label>
+                    <input type="text" name="curp" placeholder="CURP" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Dirección</label>
+                    <textarea rows="2" name="direccion" placeholder="Dirección completa" required></textarea>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Teléfono</label>
+                    <input type="text" name="telefono" placeholder="Teléfono de contacto" required>
+                </div>
+                <div class="botones-crud">
+                    <button type="submit" class="btn btn-guardar">Guardar</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="tabla-seccion">
+            <h2><strong>Colección de Doctores</strong></h2>
+            <div class="buscador-contenedor">
+                <input type="text" id="buscador" class="input-buscador" placeholder="Buscar doctor..." oninput="filtrarTabla()">
+            </div>
+            <table class="tabla-datos">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Nombre</th>
+                        <th>Especialidad</th>
+                        <th>Consultorio</th>
+                        <th>Horario</th>
+                        <th>Universidad</th>
+                        <th>Cédula</th>
+                        <th>RFC</th>
+                        <th>CURP</th>
+                        <th>Dirección</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-body">
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <footer>
+        <img src="lloyd.png" alt="Logo" width="40" style="margin-bottom: 10px;">
+        <p><strong>Alumno:</strong> Jaime Emmanuel Rodríguez Ugalde</p>
+        <p>No. Control: 0893 | 4° J | Programación | CBTIS 128</p>
+        <p><strong>Docente:</strong> Leticia Meza Díaz | <strong>Submódulo:</strong> Bases de Datos No Relacionales</p>
+    </footer>
+
+    <script>
+        // ruta del backend donde esta el server.js
+        const API_URL = '/api/doctores';
+        let editId = null;
+
+        // funcion que trae los datos de mongo y los dibuja en la tabla
+        async function cargarDatos() {
+            try {
+                const res = await fetch(API_URL);
+                const datos = await res.json();
+                const tbody = document.getElementById('tabla-body');
+                tbody.innerHTML = '';
+                datos.forEach(d => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${d.numero || ''}</td>
+                            <td>${d.nombre || ''}</td>
+                            <td>${d.especialidad || ''}</td>
+                            <td>${d.consultorio || ''}</td>
+                            <td>${d.horario || ''}</td>
+                            <td>${d.universidad || ''}</td>
+                            <td>${d.cedula || ''}</td>
+                            <td>${d.rfc || ''}</td>
+                            <td>${d.curp || ''}</td>
+                            <td>${d.direccion || ''}</td>
+                            <td>${d.telefono || ''}</td>
+                            <td class="acciones">
+                                <button class="btn btn-editar" onclick="editar('${d._id}')">Editar</button>
+                                <button class="btn btn-eliminar" onclick="eliminar('${d._id}')">Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                filtrarTabla();
+            } catch (e) {
+                console.error("Error cargando datos", e);
+            }
+        }
+
+        // cuando le doy a guardar en el formulario (ya sea nuevo o editado)
+        document.getElementById('formulario').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                if (editId) {
+                    await fetch(API_URL + '/' + editId, {
+                        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+                    });
+                    alert('Doctor actualizado correctamente');
+                } else {
+                    await fetch(API_URL, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+                    });
+                    alert('Doctor guardado correctamente');
+                }
+                e.target.reset();
+                editId = null;
+                cargarDatos();
+            } catch (error) {
+                alert('Hubo un error al guardar');
+            }
+        });
+
+        // boton de eliminar, pide contraseña por seguridad
+        async function eliminar(id) {
+            const pwd = prompt('Ingrese contraseña de Administrador para eliminar:');
+            if (pwd !== 'elysae43') {
+                alert('Acceso denegado: Contraseña incorrecta.');
+                return;
+            }
+            if (confirm('¿Seguro que deseas eliminar este registro?')) {
+                await fetch(API_URL + '/' + id, { method: 'DELETE' });
+                cargarDatos();
+            }
+        }
+
+        // sube los datos del registro a las cajas de texto para poder cambiarlos
+        async function editar(id) {
+            const pwd = prompt('Ingrese contraseña de Administrador para editar:');
+            if (pwd !== 'elysae43') {
+                alert('Acceso denegado: Contraseña incorrecta.');
+                return;
+            }
+            const res = await fetch(API_URL);
+            const datos = await res.json();
+            const doc = datos.find(d => d._id === id);
+            if (doc) {
+                editId = id;
+                document.querySelector('[name="numero"]').value = doc.numero || '';
+                document.querySelector('[name="nombre"]').value = doc.nombre || '';
+                document.querySelector('[name="especialidad"]').value = doc.especialidad || '';
+                document.querySelector('[name="consultorio"]').value = doc.consultorio || '';
+                document.querySelector('[name="horario"]').value = doc.horario || '';
+                document.querySelector('[name="universidad"]').value = doc.universidad || '';
+                document.querySelector('[name="cedula"]').value = doc.cedula || '';
+                document.querySelector('[name="rfc"]').value = doc.rfc || '';
+                document.querySelector('[name="curp"]').value = doc.curp || '';
+                document.querySelector('[name="direccion"]').value = doc.direccion || '';
+                document.querySelector('[name="telefono"]').value = doc.telefono || '';
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // el buscador que oculta las filas que no traen lo que escribo
+        function filtrarTabla() {
+            const filtro = document.getElementById('buscador').value.toLowerCase();
+            const filas = document.querySelectorAll('#tabla-body tr');
+            filas.forEach(fila => {
+                const texto = fila.textContent.toLowerCase();
+                if (texto.includes(filtro)) {
+                    fila.style.display = '';
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+        }
+
+        // mando llamar la funcion para que la tabla empiece llena
+        cargarDatos();
+    </script>
+</body>
+</html>

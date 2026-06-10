@@ -1,0 +1,217 @@
+<!-- Rodriguez Ugalde Jaime Emmanuel 4°J 0893 -->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Facturas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <img src="lloyd.png" alt="Logo" width="80">
+        <h1>Consultorio Médico Elysia</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">INICIO</a></li>
+            <li><a href="pacientes.html">PACIENTES</a></li>
+            <li><a href="doctores.html">DOCTORES</a></li>
+            <li><a href="citas.html">CITAS</a></li>
+        </ul>
+    </nav>
+
+    <div class="contenedor">
+        <section class="formulario-seccion">
+            <h2><strong>Registrar Factura</strong></h2>
+            <form id="formulario">
+                <div class="formulario-grupo">
+                    <label>Ticket No.</label>
+                    <input type="text" name="ticket" placeholder="Ej. 001" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Paciente</label>
+                    <input type="text" name="paciente" placeholder="Nombre del paciente" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Concepto del Servicio</label>
+                    <input type="text" name="concepto" placeholder="Ej. Consulta Médica" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Método de Pago</label>
+                    <select name="metodo_pago" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                        <option value="Tarjeta de Débito">Tarjeta de Débito</option>
+                        <option value="Transferencia">Transferencia</option>
+                    </select>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Detalles del Pago</label>
+                    <input type="text" name="detalles_pago" placeholder="Terminación de tarjeta, folio..." required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>RFC del Cliente</label>
+                    <input type="text" name="rfc" placeholder="RFC" required>
+                </div>
+                <div class="formulario-grupo">
+                    <label>Total Pagado</label>
+                    <input type="text" name="total" placeholder="Ej. $600.00" required>
+                </div>
+                <div class="botones-crud">
+                    <button type="submit" class="btn btn-guardar">Guardar</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="tabla-seccion">
+            <h2><strong>Colección de Facturas</strong></h2>
+            <div class="buscador-contenedor">
+                <input type="text" id="buscador" class="input-buscador" placeholder="Buscar factura..." oninput="filtrarTabla()">
+            </div>
+            <table class="tabla-datos">
+                <thead>
+                    <tr>
+                        <th>Ticket No.</th>
+                        <th>Paciente</th>
+                        <th>Concepto</th>
+                        <th>Método de Pago</th>
+                        <th>Detalles</th>
+                        <th>RFC del Cliente</th>
+                        <th>Total Pagado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-body">
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <footer>
+        <img src="lloyd.png" alt="Logo" width="40" style="margin-bottom: 10px;">
+        <p><strong>Alumno:</strong> Jaime Emmanuel Rodríguez Ugalde</p>
+        <p>No. Control: 0893 | 4° J | Programación | CBTIS 128</p>
+        <p><strong>Docente:</strong> Leticia Meza Díaz | <strong>Submódulo:</strong> Bases de Datos No Relacionales</p>
+    </footer>
+
+    <script>
+        // ruta del backend donde esta el server.js
+        const API_URL = '/api/facturas';
+        let editId = null;
+
+        // funcion que trae los datos de mongo y los dibuja en la tabla
+        async function cargarDatos() {
+            try {
+                const res = await fetch(API_URL);
+                const datos = await res.json();
+                const tbody = document.getElementById('tabla-body');
+                tbody.innerHTML = '';
+                datos.forEach(d => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${d.ticket || ''}</td>
+                            <td>${d.paciente || ''}</td>
+                            <td>${d.concepto || ''}</td>
+                            <td>${d.metodo_pago || ''}</td>
+                            <td>${d.detalles_pago || ''}</td>
+                            <td>${d.rfc || ''}</td>
+                            <td><strong>${d.total || ''}</strong></td>
+                            <td class="acciones">
+                                <button class="btn btn-editar" onclick="editar('${d._id}')">Editar</button>
+                                <button class="btn btn-eliminar" onclick="eliminar('${d._id}')">Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                filtrarTabla();
+            } catch (e) {
+                console.error("Error cargando datos", e);
+            }
+        }
+
+        // cuando le doy a guardar en el formulario (ya sea nuevo o editado)
+        document.getElementById('formulario').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                if (editId) {
+                    await fetch(API_URL + '/' + editId, {
+                        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+                    });
+                    alert('Factura actualizada correctamente');
+                } else {
+                    await fetch(API_URL, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+                    });
+                    alert('Factura guardada correctamente');
+                }
+                e.target.reset();
+                editId = null;
+                cargarDatos();
+            } catch (error) {
+                alert('Hubo un error al guardar');
+            }
+        });
+
+        // boton de eliminar, pide contraseña por seguridad
+        async function eliminar(id) {
+            const pwd = prompt('Ingrese contraseña de Administrador para eliminar:');
+            if (pwd !== 'elysae43') {
+                alert('Acceso denegado: Contraseña incorrecta.');
+                return;
+            }
+            if (confirm('¿Seguro que deseas eliminar este registro?')) {
+                await fetch(API_URL + '/' + id, { method: 'DELETE' });
+                cargarDatos();
+            }
+        }
+
+        // sube los datos del registro a las cajas de texto para poder cambiarlos
+        async function editar(id) {
+            const pwd = prompt('Ingrese contraseña de Administrador para editar:');
+            if (pwd !== 'elysae43') {
+                alert('Acceso denegado: Contraseña incorrecta.');
+                return;
+            }
+            const res = await fetch(API_URL);
+            const datos = await res.json();
+            const factura = datos.find(d => d._id === id);
+            if (factura) {
+                editId = id;
+                document.querySelector('[name="ticket"]').value = factura.ticket || '';
+                document.querySelector('[name="paciente"]').value = factura.paciente || '';
+                document.querySelector('[name="concepto"]').value = factura.concepto || '';
+                document.querySelector('[name="metodo_pago"]').value = factura.metodo_pago || '';
+                document.querySelector('[name="detalles_pago"]').value = factura.detalles_pago || '';
+                document.querySelector('[name="rfc"]').value = factura.rfc || '';
+                document.querySelector('[name="total"]').value = factura.total || '';
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // el buscador que oculta las filas que no traen lo que escribo
+        function filtrarTabla() {
+            const filtro = document.getElementById('buscador').value.toLowerCase();
+            const filas = document.querySelectorAll('#tabla-body tr');
+            filas.forEach(fila => {
+                const texto = fila.textContent.toLowerCase();
+                if (texto.includes(filtro)) {
+                    fila.style.display = '';
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+        }
+
+        // mando llamar la funcion para que la tabla empiece llena
+        cargarDatos();
+    </script>
+</body>
+</html>
